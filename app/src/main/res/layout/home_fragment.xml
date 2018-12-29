@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <LinearLayout
+        android:id="@+id/linearLayoutHome"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Switch
+                android:id="@+id/switchVegetarian"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_weight="1"
+                android:text="@string/vegetarian" />
+
+            <Spinner
+                android:id="@+id/spinnerTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:dropDownWidth="match_parent"
+                android:soundEffectsEnabled="true"
+                android:splitMotionEvents="false"
+                android:textAlignment="center" />
+
+            <CheckBox
+                android:id="@+id/checkBoxRank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Use rank"
+                tools:text="Use rank" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButtonBreakfast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            app:srcCompat="@mipmap/ic_breakfast_foreground" />
+
+        <ImageButton
+            android:id="@+id/imageButtonLunch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            app:srcCompat="@mipmap/ic_lunch_foreground" />
+
+        <ImageButton
+            android:id="@+id/imageButtonDinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            app:srcCompat="@mipmap/ic_dinne_fg" />
+
+        <ImageButton
+            android:id="@+id/imageButtonSnack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            app:srcCompat="@mipmap/ic_snack_fg" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
