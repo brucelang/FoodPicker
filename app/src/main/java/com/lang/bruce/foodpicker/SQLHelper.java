@@ -15,7 +15,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLHELPER";
 
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
     private static final String DATABASE_NAME = "Food.db";
     static String[] projectionFood = {
             Constants.COLUMN_FOODS_ID,
@@ -159,6 +159,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     }
 
     boolean hasFood(Food food) {
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =
                 db.query(Constants.TABLE_FOODS,
@@ -234,8 +235,8 @@ public class SQLHelper extends SQLiteOpenHelper {
         return foods;
     }
 
-    ArrayList<TimeStamp> getAllDates(String ordering) {
-        Log.d(TAG + "GetAll", "Get All TimeStamps ordering: " + ordering);
+    ArrayList<TimeStamp> getAllDates(String filter) {
+        Log.d(TAG + "GetAll", "Get All TimeStamps ordering: " + filter);
         ArrayList<TimeStamp> timeStamps = new ArrayList<>();
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -243,7 +244,7 @@ public class SQLHelper extends SQLiteOpenHelper {
                 db.query(Constants.TABLE_DATES,
                         projectionDates,
                         Constants.COLUMN_DATES_DATE + " LIKE ?",
-                        new String[]{ordering+"%"},
+                        new String[]{filter + "%"},
                         null,
                         null,
                         Constants.COLUMN_DATES_ID + " DESC",
@@ -275,9 +276,6 @@ public class SQLHelper extends SQLiteOpenHelper {
         db.close();
         Log.d(TAG, "Deleted: " + food.toString());
 
-        if (x <= 0) {
-            return false;
-        }
-        return true;
+        return x > 0;
     }
 }

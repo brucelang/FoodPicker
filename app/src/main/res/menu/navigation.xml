@@ -12,7 +12,7 @@
         android:title="@string/home" />
 
     <item
-        android:id="@+id/navigation_dummy"
+        android:id="@+id/navigation_overview"
         android:icon="@mipmap/ic_overview_fg"
         android:title="Food" />
 

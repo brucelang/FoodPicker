@@ -48,16 +48,6 @@
                 android:splitMotionEvents="false"
                 android:textAlignment="center" />
 
-            <CheckBox
-                android:id="@+id/checkBoxRank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="Use rank"
-                tools:text="Use rank" />
-
         </LinearLayout>
 
         <ImageButton

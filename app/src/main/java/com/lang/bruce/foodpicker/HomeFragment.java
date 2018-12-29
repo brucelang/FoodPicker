@@ -14,7 +14,6 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 public class HomeFragment extends Fragment {
-
     private static final String TAG = "HOMEFRAGMENT";
 
     @Override
@@ -73,7 +72,7 @@ public class HomeFragment extends Fragment {
     private void GetFood(String value) {
         Switch isVeggie = getView().findViewById(R.id.switchVegetarian);
         Spinner time = getView().findViewById(R.id.spinnerTime);
-        //todo use rank
+
         Intent myIntent = new Intent(getContext(), ShowFood.class);
         myIntent.putExtra("type", value);
         myIntent.putExtra("isVeggie",  isVeggie.isChecked());

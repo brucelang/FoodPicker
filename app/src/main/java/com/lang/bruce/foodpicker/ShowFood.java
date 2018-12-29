@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 
 public class ShowFood extends AppCompatActivity {
-
     private static final String TAG = "SHOWFOOD";
 
     private SQLHelper sql;

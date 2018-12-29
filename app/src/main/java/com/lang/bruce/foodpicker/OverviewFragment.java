@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class OverviewFragment extends Fragment {
-
     private static final String TAG = "OVERVIEWFRAGMENT";
+
     private ListView listView;
     private CalendarView calendarView;
     private SQLHelper sql;
