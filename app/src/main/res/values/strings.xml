@@ -3,7 +3,8 @@
     <string name="action_info">Info</string>
     <string name="ranking">Ranking</string>
     <string name="home">Home</string>
-    <string name="vegetarian">Vegetarian</string>
+    <string name="vegetarian">Veggie</string>
     <string name="no_data">No data</string>
     <string name="refresh">Refresh_Icon</string>
+    <string name="delete">Delete</string>
 </resources>

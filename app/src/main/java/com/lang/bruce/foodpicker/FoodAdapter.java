@@ -13,6 +13,13 @@ import java.util.ArrayList;
 
 public class FoodAdapter extends ArrayAdapter<Food> {
 
+    public boolean rank = true;
+    TextView txtName;
+    TextView txtType;
+    TextView txtRankKcal;
+    ImageView image;
+    Food food;
+
     FoodAdapter(Context context, ArrayList<Food> food) {
         super(context, 0, food);
     }
@@ -21,32 +28,27 @@ public class FoodAdapter extends ArrayAdapter<Food> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-        Food food = getItem(position);
+        food = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.food_item, parent, false);
         }
 
-        TextView txtName = convertView.findViewById(R.id.textViewName);
-        TextView txtType =  convertView.findViewById(R.id.textViewType);
-        TextView txtRank =  convertView.findViewById(R.id.textViewRank);
-        ImageView image =  convertView.findViewById(R.id.imageViewVeggie);
+        txtName = convertView.findViewById(R.id.textViewName);
+        txtType = convertView.findViewById(R.id.textViewType);
+        txtRankKcal = convertView.findViewById(R.id.textViewRankOrKcal);
+        image = convertView.findViewById(R.id.imageViewVeggie);
 
         assert food != null;
         txtName.setText(food.getName());
         txtType.setText(food.getType());
-        txtRank.setText(food.getRank() +"x");
-
-        if(food.getRank() > 100)
+        if (rank)
         {
-            txtRank.setWidth(70);
-        }
-        if(food.getRank() > 1000)
+            txtRankKcal.setText(food.getRank() + "x");
+            AdjustWidth();
+        } else
         {
-            txtRank.setWidth(90);
-        }
-        if(food.getRank() > 10000)
-        {
-            txtRank.setWidth(100);
+            txtRankKcal.setVisibility(View.GONE);
+            txtName.setText(food.getName() + " (" + Math.round(food.getKcal()) + " kcal)");
         }
 
         if(food.getVegetarian() == 0)
@@ -55,5 +57,17 @@ public class FoodAdapter extends ArrayAdapter<Food> {
         }
 
         return convertView;
+    }
+
+    private void AdjustWidth() {
+        if (food.getRank() > 100) {
+            txtRankKcal.setWidth(70);
+        }
+        if (food.getRank() > 1000) {
+            txtRankKcal.setWidth(90);
+        }
+        if (food.getRank() > 10000) {
+            txtRankKcal.setWidth(100);
+        }
     }
 }

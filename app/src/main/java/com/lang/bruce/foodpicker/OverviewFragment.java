@@ -3,28 +3,37 @@ package com.lang.bruce.foodpicker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CalendarView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class OverviewFragment extends Fragment {
     private static final String TAG = "OVERVIEWFRAGMENT";
-
+    public static TextView txtOverview;
+    public static ArrayList dates;
+    private static SQLHelper sql;
+    private static FoodAdapter adapter;
+    private static ArrayList foods;
     private ListView listView;
-    private CalendarView calendarView;
-    private SQLHelper sql;
-    private FoodAdapter adapter;
-    private ArrayList foods;
-    private ArrayList dates;
+    private DialogFragment datePickerFragment = new DatePickerFragment();
+
+    public static void setData() {
+        foods.clear();
+
+        for (int i = 0; i < dates.size(); i++) {
+            foods.add(sql.getFood(((TimeStamp) dates.get(i)).getFoodId()));
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,26 +42,36 @@ public class OverviewFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        calendarView = getView().findViewById(R.id.calendarView);
+        txtOverview = getView().findViewById(R.id.textViewOverview);
         listView = getView().findViewById(R.id.listViewFoodsDate);
         sql = new SQLHelper(getContext());
         foods = new ArrayList();
         adapter = new FoodAdapter(getContext(), foods);
+        adapter.rank = false;
 
-        calendarView.setDate(new Date().getTime());
-        dates = sql.getAllDates(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "" +
+        String today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "" +
                 (Calendar.getInstance().get(Calendar.MONTH) + 1) + "" +
-                Calendar.getInstance().get(Calendar.YEAR));
+                Calendar.getInstance().get(Calendar.YEAR);
+        txtOverview.setText(Math.round(MainActivity.todaysKcal) + " kcal today");
+        dates = sql.getAllDates(today);
         setData();
 
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        txtOverview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerFragment.show(getFragmentManager(), "Date Picker");
+            }
+        });
+
+      /*  calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
                 Log.d(TAG, dayOfMonth + " " + month + " " + year);
                 dates = sql.getAllDates(dayOfMonth + "" + (month + 1) + "" + year);
                 setData();
             }
-        });
+        });*/
+
 
         listView.setAdapter(adapter);
         listView.setLongClickable(true);
@@ -69,19 +88,15 @@ public class OverviewFragment extends Fragment {
         });
     }
 
-    private void setData() {
-        foods.clear();
-
-        for (int i = 0; i < dates.size(); i++) {
-            foods.add(sql.getFood(((TimeStamp) dates.get(i)).getFoodId()));
-
-        }
-        adapter.notifyDataSetChanged();
+    @Override
+    public void onDestroyView() {
+        sql.close();
+        super.onDestroyView();
     }
 
     @Override
     public void onResume() {
-        calendarView.setDate(new Date().getTime());
+        //  calendarView.setDate(new Date().getTime());
         super.onResume();
     }
 }

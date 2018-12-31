@@ -26,6 +26,9 @@
         <activity
             android:name=".FoodOverview"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddFood"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

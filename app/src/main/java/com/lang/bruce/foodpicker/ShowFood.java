@@ -82,6 +82,7 @@ public class ShowFood extends AppCompatActivity {
         food.rank++;
         sql.updateFood(food);
         sql.addTimeStamp(food);
+        MainActivity.CountKcal(sql);
         Log.d(TAG, "Updated: " + food.toString());
     }
 

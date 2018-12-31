@@ -28,17 +28,20 @@ import org.apache.poi.ss.usermodel.Row;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MAINACTIVITY";
+    public static double todaysKcal = 0;
     //Fragments
     final Fragment rankFragment = new RankFragment();
     final Fragment homeFragment = new HomeFragment();
     final Fragment overviewFragment = new OverviewFragment();
     final FragmentManager fm = getSupportFragmentManager();
-    public SQLHelper sql = new SQLHelper(this);
     Fragment active = homeFragment;
+    private SQLHelper sql;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -65,19 +68,21 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public static void CountKcal(SQLHelper sql) {
+        CountKcal(sql, Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "" +
+                (Calendar.getInstance().get(Calendar.MONTH) + 1) + "" +
+                Calendar.getInstance().get(Calendar.YEAR));
+    }
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_home);
-        MakeIconsBigger(navigation);
+    public static void CountKcal(SQLHelper sql, String filter) {
+        todaysKcal = 0;
+        ArrayList<TimeStamp> dates = sql.getAllDates(filter);
 
-        GetExcelData();
+        for (int i = 0; i < dates.size(); i++) {
+            todaysKcal += sql.getFood((dates.get(i)).getFoodId()).getKcal();
+        }
+        sql.close();
+        Log.d(TAG, "Todays Kcal = " + todaysKcal);
     }
 
     private void MakeIconsBigger(BottomNavigationView navigation) {
@@ -92,10 +97,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_home);
+        MakeIconsBigger(navigation);
+
+        GetExcelData();
+        CountKcal(new SQLHelper(this));
+    }
+
     private void GetExcelData() {
         InputStream myInput;
         AssetManager assetManager = getAssets();
-
+        sql = new SQLHelper(this);
         SQLiteDatabase db = sql.getWritableDatabase();
 
         try {
@@ -120,8 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     while (cellIter.hasNext()) {
                         HSSFCell myCell = (HSSFCell) cellIter.next();
 
-                        switch (colno)
-                        {
+                        switch (colno) {
                             case 0:
                                 food.setName(myCell.toString());
                                 break;
@@ -160,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         db.close();
+        sql.close();
     }
 
     @Override

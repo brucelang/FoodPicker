@@ -15,7 +15,7 @@ public class SQLHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "SQLHELPER";
 
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 21;
     private static final String DATABASE_NAME = "Food.db";
     static String[] projectionFood = {
             Constants.COLUMN_FOODS_ID,
@@ -137,22 +137,21 @@ public class SQLHelper extends SQLiteOpenHelper {
                         null,
                         null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
-
         Food food = new Food();
-        food.setId(Integer.parseInt(cursor.getString(0)));
-        food.setName(cursor.getString(1));
-        food.setType(cursor.getString(2));
-        food.setTime(Double.parseDouble(cursor.getString(3)));
-        food.setKcal(Double.parseDouble(cursor.getString(4)));
-        food.setProtein(Double.parseDouble(cursor.getString(5)));
-        food.setFat(Double.parseDouble(cursor.getString(6)));
-        food.setCarbs(Double.parseDouble(cursor.getString(7)));
-        food.setVegetarian(Double.parseDouble(cursor.getString(8)));
-        food.setRank(Integer.parseInt(cursor.getString(9)));
+        if (cursor != null && cursor.moveToFirst()) {
+            food.setId(Integer.parseInt(cursor.getString(0)));
+            food.setName(cursor.getString(1));
+            food.setType(cursor.getString(2));
+            food.setTime(Double.parseDouble(cursor.getString(3)));
+            food.setKcal(Double.parseDouble(cursor.getString(4)));
+            food.setProtein(Double.parseDouble(cursor.getString(5)));
+            food.setFat(Double.parseDouble(cursor.getString(6)));
+            food.setCarbs(Double.parseDouble(cursor.getString(7)));
+            food.setVegetarian(Double.parseDouble(cursor.getString(8)));
+            food.setRank(Integer.parseInt(cursor.getString(9)));
 
-        Log.d("getFood(" + id + ")", food.toString());
+            Log.d("getFood(" + id + ")", food.toString());
+        }
 
         cursor.close();
         return food;
@@ -271,6 +270,19 @@ public class SQLHelper extends SQLiteOpenHelper {
 
         int x = db.delete(Constants.TABLE_FOODS,
                 Constants.COLUMN_FOODS_ID + " = ?",
+                new String[]{String.valueOf(food.getId())});
+
+        db.close();
+        Log.d(TAG, "Deleted: " + food.toString());
+
+        return x > 0;
+    }
+
+    public boolean deleteFoodDates(Food food) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int x = db.delete(Constants.TABLE_DATES,
+                Constants.COLUMN_DATES_FOODS_ID + " = ?",
                 new String[]{String.valueOf(food.getId())});
 
         db.close();
