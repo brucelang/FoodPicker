@@ -9,4 +9,10 @@
     <string name="delete">Delete</string>
     <string name="search">Search</string>
     <string name="food">Food</string>
+    <string name="carbohydrates">Carbohydrates (g)</string>
+    <string name="fats">Fats (g)</string>
+    <string name="protein">Protein (g)</string>
+    <string name="calories">Calories</string>
+    <string name="time_min">Time (min)</string>
+    <string name="save">Save</string>
 </resources>
