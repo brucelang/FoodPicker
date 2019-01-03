@@ -29,6 +29,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
                 android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:text="@string/no_data"
                 android:textAlignment="center"
                 android:textSize="30sp"
@@ -40,6 +41,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 app:srcCompat="@mipmap/ic_veggie_fg" />
         </LinearLayout>
@@ -58,6 +60,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
                 android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:text="@string/no_data"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -68,6 +71,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 app:srcCompat="@mipmap/ic_veggie_fg" />
         </LinearLayout>
@@ -79,6 +83,7 @@
             android:layout_gravity="bottom|end"
             android:layout_weight="0"
             android:background="?attr/selectableItemBackground"
-            app:srcCompat="@mipmap/ic_refresh_fg" android:contentDescription="@string/refresh" />
+            android:contentDescription="@string/refresh"
+            app:srcCompat="@mipmap/ic_refresh_fg" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

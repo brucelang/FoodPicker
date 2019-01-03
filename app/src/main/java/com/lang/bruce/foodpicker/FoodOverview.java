@@ -26,11 +26,13 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
+import static java.lang.String.format;
+
 public class FoodOverview extends AppCompatActivity {
     private static final String TAG = "FOODOVERVIEW";
 
-    private Food food;
-    private SQLHelper sql;
+    private static Food food;
+    private static SQLHelper sql;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +40,20 @@ public class FoodOverview extends AppCompatActivity {
         setContentView(R.layout.food_overview);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sql = new SQLHelper(this);
+        sql = SQLHelper.getInstance(this);
         food = (Food) getIntent().getSerializableExtra("Food");
+        Log.d(TAG, "OnCreate Food = " + food.toString());
 
-        getSupportActionBar().setTitle(food.getName());
-        setPieChart(food);
-        setData(food);
+        if (food != null) {
+            getSupportActionBar().setTitle(food.getName());
+            setPieChart();
+            setData();
+        }
     }
 
-    public void setPieChart(final Food food) {
+    private void setPieChart() {
+        //fixme?
+        Log.d(TAG, "PieChart " + food.toString());
         final float sum = (float) (food.getProtein() + food.getCarbs() + food.getFat());
         final PieChart pieChart = findViewById(R.id.piechart);
         pieChart.setCenterText(food.getKcal() + " kcal");
@@ -83,7 +90,7 @@ public class FoodOverview extends AppCompatActivity {
         dataSet.setValueTypeface(Typeface.DEFAULT_BOLD);
 
         PieData pieData = new PieData((dataSet));
-        pieData.setValueFormatter(new GrammFormatter());
+        pieData.setValueFormatter(new GramFormatter());
         pieData.setValueTextSize(18);
         pieChart.setEntryLabelTextSize(0);
         pieData.setValueTextColor(Color.WHITE);
@@ -98,7 +105,8 @@ public class FoodOverview extends AppCompatActivity {
         legend.setXEntrySpace(15);
     }
 
-    private void setData(Food food) {
+    private void setData() {
+        Log.d(TAG, "Set data " + food.toString());
         if (!food.getType().contains(Constants.BREAKFAST)) {
             findViewById(R.id.imageViewBreak).setVisibility(View.GONE);
         }
@@ -117,15 +125,15 @@ public class FoodOverview extends AppCompatActivity {
         TextView txtMinutes = findViewById(R.id.textViewMinutes);
         int time = (int) Math.round(food.getTime());
         if (time != 1) {
-            txtMinutes.setText(Math.round(food.getTime()) + " minutes");
+            txtMinutes.setText(format("%d minutes", Math.round(food.getTime())));
         } else {
-            txtMinutes.setText(Math.round(food.getTime()) + " minute");
+            txtMinutes.setText(format("%d minute", Math.round(food.getTime())));
         }
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_food_overview, menu);
         return true;
     }
@@ -135,16 +143,18 @@ public class FoodOverview extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
+            Log.d(TAG, "Go back");
             finish();
         }
         if (id == R.id.action_delete) {
             Log.d(TAG, "Deleting food " + food.toString());
-            DeleteFood();
+            deleteFood();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void DeleteFood() {
+    private void deleteFood() {
+        Log.d(TAG, "deleteFood " + food.toString());
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Delete entry");
         alert.setMessage("Are you sure you want to delete " + food.getName() + "?");
@@ -152,13 +162,12 @@ public class FoodOverview extends AppCompatActivity {
 
             public void onClick(DialogInterface dialog, int which) {
                 if (sql.deleteFood(food)) {
-                    sql.deleteFoodDates(food);
-                    MainActivity.CountKcal(sql);
-
+                    HelperMethods.countKcal(sql);
                     Toast.makeText(getApplicationContext(), food.getName() + " successfully deleted", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Deleted " + food.toString());
                     finish();
                 } else {
+                    Log.d(TAG, "Couldn't delete " + food.toString());
                     Toast.makeText(getApplicationContext(), "Couldn't delete " + food.getName(), Toast.LENGTH_SHORT).show();
                 }
             }

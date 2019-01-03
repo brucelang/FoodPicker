@@ -1,7 +1,6 @@
 package com.lang.bruce.foodpicker;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,34 +10,38 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.lang.bruce.foodpicker.HelperMethods.updateRank;
+import static java.lang.String.format;
 
 public class ShowFood extends AppCompatActivity {
     private static final String TAG = "SHOWFOOD";
 
-    private SQLHelper sql;
-    private SQLiteDatabase db;
+    private static SQLHelper sql;
 
-    private String type;
-    private double time;
-    private boolean isVeggie;
+    //Filter
+    private static String type;
+    private static double time;
+    private static boolean isVeggie;
+    private static Food food1;
+    private static Food food2;
 
-    private Button food1;
-    private Button food2;
-
-    private int id1;
-    private int id2;
+    //View
+    private Button button1;
+    private Button button2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_food);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sql = new SQLHelper(getApplicationContext());
-        db = sql.getReadableDatabase();
+        sql = SQLHelper.getInstance(this);
 
-        food1 = findViewById(R.id.buttonFirst);
-        food2 = findViewById(R.id.buttonSecond);
+        button1 = findViewById(R.id.buttonFirst);
+        button2 = findViewById(R.id.buttonSecond);
 
         type = getIntent().getStringExtra("type");
         isVeggie = getIntent().getBooleanExtra("isVeggie", false);
@@ -56,36 +59,30 @@ public class ShowFood extends AppCompatActivity {
             }
         });
 
-        food1.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!food1.getText().equals(getResources().getString(R.string.no_data)))
+                if (!button1.getText().equals(getResources().getString(R.string.no_data)))
                 {
-                    UpdateRank(id1);
+                    Log.d(TAG, food1.toString() + " choosen");
+                    updateRank(sql, food1);
                 }
                 finish();
             }
         });
 
-        food2.setOnClickListener(new View.OnClickListener() {
+        button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!food2.getText().equals(getResources().getString(R.string.no_data)))
+                if (!button2.getText().equals(getResources().getString(R.string.no_data)))
                 {
-                    UpdateRank(id2);
+                    Log.d(TAG, food2.toString() + " choosen");
+                    updateRank(sql, food2);
                 }
                 finish();
             }
         });
     }
 
-    private void UpdateRank(int id) {
-        Food food = sql.getFood(id);
-        food.rank++;
-        sql.updateFood(food);
-        sql.addTimeStamp(food);
-        MainActivity.CountKcal(sql);
-        Log.d(TAG, "Updated: " + food.toString());
-    }
-
+    @SuppressLint("DefaultLocale")
     private void setFood() {
         String selection = Constants.COLUMN_FOODS_TYPE + " LIKE ?";
         ArrayList<String> params = new ArrayList<>();
@@ -103,40 +100,28 @@ public class ShowFood extends AppCompatActivity {
         String[] paramArray = new String[params.size()];
         paramArray = params.toArray(paramArray);
 
-        Cursor cursor = db.query(
-                Constants.TABLE_FOODS,
-                SQLHelper.projectionFood,
-                selection,
-                paramArray,
-                null,
-                null,
-                "RANDOM() LIMIT 2"
-        );
+        Log.d(TAG, "Set food: Selection = " + selection + " Params = " + Arrays.toString(paramArray));
 
-        if (cursor.moveToFirst()) {
-            id1 = (Integer.parseInt(cursor.getString(0)));
-            Food food = sql.getFood(id1);
-            food1.setText("1. " + food.getName() + " (" + food.getRank() + ")");
-            if(food.getVegetarian() != 1) findViewById(R.id.imageViewFirst).setVisibility(View.INVISIBLE);
+        ArrayList<Food> foods = sql.getAllFoods(selection, paramArray, "RANDOM() LIMIT 2");
+        Log.d(TAG, "Set foods " + foods.toString());
+
+        if (!foods.isEmpty()) {
+            Log.d(TAG, "Food not empty");
+            food1 = foods.get(0);
+            button1.setText(format("1. %s (%d)", food1.getName(), food1.getRank()));
+            if (food1.getVegetarian() != 1)
+                findViewById(R.id.imageViewFirst).setVisibility(View.INVISIBLE);
             else findViewById(R.id.imageViewFirst).setVisibility(View.VISIBLE);
 
-            if (cursor.moveToNext()) {
-                id2 = (Integer.parseInt(cursor.getString(0)));
-                food = sql.getFood(id2);
-                food2.setText("2. " + food.getName() + " (" + food.getRank() + ")");
-                if(food.getVegetarian() != 1) findViewById(R.id.imageViewSecond).setVisibility(View.INVISIBLE);
+            if (foods.size() >= 2) {
+                Log.d(TAG, "Second food found");
+                food2 = foods.get(1);
+                button2.setText(format("2. %s (%d)", food2.getName(), food2.getRank()));
+                if (food2.getVegetarian() != 1)
+                    findViewById(R.id.imageViewSecond).setVisibility(View.INVISIBLE);
                 else findViewById(R.id.imageViewSecond).setVisibility(View.VISIBLE);
             }
         }
-
-        cursor.close();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        db.close();
-        sql.close();
     }
 
     @Override
@@ -144,6 +129,7 @@ public class ShowFood extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id==android.R.id.home) {
+            Log.d(TAG, "Go Back");
             finish();
         }
         return super.onOptionsItemSelected(item);

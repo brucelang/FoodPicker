@@ -6,11 +6,10 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 
-public class GrammFormatter implements IValueFormatter {
+class GramFormatter implements IValueFormatter {
+    private final DecimalFormat mFormat;
 
-    private DecimalFormat mFormat;
-
-    public GrammFormatter() {
+    public GramFormatter() {
         mFormat = new DecimalFormat("###,###,##0.0"); 
     }
 

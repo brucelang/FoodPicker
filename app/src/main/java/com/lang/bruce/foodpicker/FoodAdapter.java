@@ -11,14 +11,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class FoodAdapter extends ArrayAdapter<Food> {
+import static java.lang.String.format;
+
+class FoodAdapter extends ArrayAdapter<Food> {
 
     public boolean rank = true;
-    TextView txtName;
-    TextView txtType;
-    TextView txtRankKcal;
-    ImageView image;
-    Food food;
+    private TextView txtName;
+    private TextView txtType;
+    private TextView txtRankKcal;
+    private ImageView image;
+    private Food food;
 
     FoodAdapter(Context context, ArrayList<Food> food) {
         super(context, 0, food);
@@ -27,7 +29,7 @@ public class FoodAdapter extends ArrayAdapter<Food> {
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-
+        //fixme ?
         food = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.food_item, parent, false);
@@ -43,12 +45,12 @@ public class FoodAdapter extends ArrayAdapter<Food> {
         txtType.setText(food.getType());
         if (rank)
         {
-            txtRankKcal.setText(food.getRank() + "x");
-            AdjustWidth();
+            txtRankKcal.setText(format("%dx", food.getRank()));
+            adjustWidth();
         } else
         {
             txtRankKcal.setVisibility(View.GONE);
-            txtName.setText(food.getName() + " (" + Math.round(food.getKcal()) + " kcal)");
+            txtName.setText(format("%s (%d kcal)", food.getName(), Math.round(food.getKcal())));
         }
 
         if(food.getVegetarian() == 0)
@@ -59,7 +61,7 @@ public class FoodAdapter extends ArrayAdapter<Food> {
         return convertView;
     }
 
-    private void AdjustWidth() {
+    private void adjustWidth() {
         if (food.getRank() > 100) {
             txtRankKcal.setWidth(70);
         }

@@ -6,29 +6,75 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/linearLayout5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewOverview"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="TextView"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageButtonArrowLeft"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackground"
+                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@mipmap/ic_left_arrow_fg" />
+
+            <TextView
+                android:id="@+id/textViewOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:text="@string/no_data"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/imageButtonArrowRight"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackground"
+                android:paddingEnd="5dp"
+                android:paddingRight="5dp"
+                android:scaleType="centerInside"
+                app:srcCompat="@mipmap/ic_right_arrow_fg" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
         <ListView
             android:id="@+id/listViewFoodsDate"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="55dp"
+            android:layout_weight="1"
             android:divider="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:paddingLeft="10dp" />
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

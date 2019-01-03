@@ -7,4 +7,6 @@
     <string name="no_data">No data</string>
     <string name="refresh">Refresh_Icon</string>
     <string name="delete">Delete</string>
+    <string name="search">Search</string>
+    <string name="food">Food</string>
 </resources>

@@ -2,9 +2,10 @@ package com.lang.bruce.foodpicker;
 
 import java.io.Serializable;
 
-public class Food implements Serializable {
+class Food implements Serializable {
 
     public int id;
+    int rank;
     private String name;
     private String type;
     private double time;
@@ -13,7 +14,6 @@ public class Food implements Serializable {
     private double fat;
     private double carbs;
     private double vegetarian = 0;
-    int rank;
 
     Food() {
         super();

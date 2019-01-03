@@ -2,7 +2,7 @@ package com.lang.bruce.foodpicker;
 
 import java.io.Serializable;
 
-public class TimeStamp implements Serializable {
+class TimeStamp implements Serializable {
     private int id;
     private int foodId;
     private String date;
@@ -12,8 +12,8 @@ public class TimeStamp implements Serializable {
     }
 
     @Override
-    public String toString() {//todo
-        return id + " " + foodId + " " + date;
+    public String toString() {
+        return "TimeStamp " + id + " Food " + foodId + " at " + date;
     }
 
     public int getId() {

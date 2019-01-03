@@ -14,6 +14,6 @@
     <item
         android:id="@+id/navigation_overview"
         android:icon="@mipmap/ic_overview_fg"
-        android:title="Food" />
+        android:title="@string/food" />
 
 </menu>

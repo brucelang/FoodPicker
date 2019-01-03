@@ -22,28 +22,33 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class RankFragment extends Fragment {
-    private final String TAG = "RANKFRAGMENT";
+import static com.lang.bruce.foodpicker.HelperMethods.updateRank;
 
-    private SQLHelper sql;
+public class RankFragment extends Fragment {
+    private static SQLHelper sql;
+    private static ArrayList foods;
+    private final String TAG = "RANKFRAGMENT";
+    //Views
     private ListView listView;
     private FoodAdapter adapter;
-    private ArrayList foods;
     private SearchView searchView = null;
-    private SearchView.OnQueryTextListener queryTextListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.rank_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        listView = getView().findViewById(R.id.listViewFood);
-        sql = new SQLHelper(getContext());
-        foods = sql.getAllFoods(" ORDER BY " + Constants.COLUMN_FOODS_RANK + " DESC");
+        Log.d(TAG, "onViewCreated");
+        sql = SQLHelper.getInstance(getContext());
+        foods = sql.getAllFoods(Constants.COLUMN_FOODS_RANK + " DESC");
         adapter = new FoodAdapter(getContext(), foods);
+
+        //ListView
+        listView = getView().findViewById(R.id.listViewFood);
         listView.setAdapter(adapter);
         listView.setLongClickable(true);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -51,8 +56,8 @@ public class RankFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                            int pos, long id) {
                 Food clickedFood = (Food) listView.getItemAtPosition(pos);
-                Log.d(TAG, "Clicked: " + clickedFood.toString());
-                EatFood(clickedFood);
+                Log.d(TAG, "Long Clicked: " + clickedFood.toString());
+                eatFood(clickedFood);
                 return true;
             }
         });
@@ -68,15 +73,16 @@ public class RankFragment extends Fragment {
         });
     }
 
-    private void EatFood(final Food clickedFood) {
+    private void eatFood(final Food clickedFood) {
+        Log.d(TAG, "eatFood " + clickedFood);
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Eat food");
         alert.setMessage("Have you eaten " + clickedFood.getName() + " today?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                UpdateRank(clickedFood.getId());
-
+                updateRank(sql, clickedFood);
+                refreshListView();
                 Toast.makeText(getContext(), clickedFood.getName() + " successfully eaten", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Eaten " + clickedFood.toString());
             }
@@ -91,6 +97,7 @@ public class RankFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d(TAG, "onCreateOptionsMenu");
         menu.removeItem(R.id.action_info);
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
@@ -100,9 +107,10 @@ public class RankFragment extends Fragment {
             searchView = (SearchView) searchItem.getActionView();
         }
         if (searchView != null) {
+            assert searchManager != null;
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 
-            queryTextListener = new SearchView.OnQueryTextListener() {
+            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Log.i(TAG, "Search for " + newText);
@@ -110,6 +118,7 @@ public class RankFragment extends Fragment {
                     adapter.notifyDataSetChanged();
                     return true;
                 }
+
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Log.i(TAG, "Search submit " + query);
@@ -133,30 +142,14 @@ public class RankFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        sql.close();
-        super.onDestroyView();
-    }
-
-    @Override
     public void onResume() {
-        RefreshListView();
+        refreshListView();
         super.onResume();
     }
 
-    private void UpdateRank(int id) {
-        Food food = sql.getFood(id);
-        food.rank++;
-        sql.updateFood(food);
-        sql.addTimeStamp(food);
-        MainActivity.CountKcal(sql);
-        Log.d(TAG, "Updated: " + food.toString());
-
-        RefreshListView();
-    }
-
-    private void RefreshListView() {
-        foods = sql.getAllFoods(" ORDER BY " + Constants.COLUMN_FOODS_RANK + " DESC");
+    private void refreshListView() {
+        Log.d(TAG, "refreshListView");
+        foods = sql.getAllFoods(Constants.COLUMN_FOODS_RANK + " DESC");
         adapter.clear();
         adapter.addAll(foods);
         adapter.notifyDataSetChanged();
