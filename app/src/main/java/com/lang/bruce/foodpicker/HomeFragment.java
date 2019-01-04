@@ -1,7 +1,6 @@
 package com.lang.bruce.foodpicker;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +16,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Calendar;
-
+import static com.lang.bruce.foodpicker.HelperMethods.getKcalColor;
 import static java.lang.String.format;
 
 public class HomeFragment extends Fragment {
@@ -125,27 +123,7 @@ public class HomeFragment extends Fragment {
     private void updateKcalTextView() {
         int kcal = (int) Math.round(HelperMethods.todaysKcal);
         txtKcal.setText(format("%d kcal", kcal));
+        txtKcal.setTextColor(getKcalColor());
         Log.d(TAG, "updateKcalTextView " + kcal + " kcal");
-
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour <= 12 && kcal < 300
-                || hour > 12 && hour <= 18 && kcal < 1500
-                || hour > 18 && hour <= 24 && kcal < 2300) {
-            txtKcal.setTextColor(Color.RED);
-            Log.d(TAG, "Red  " + kcal + " kcal at hour " + hour);
-        }
-
-        if (hour <= 12 && kcal < 500 && kcal >= 300
-                || hour > 12 && hour <= 18 && kcal >= 1500 && kcal < 1800
-                || hour > 18 && hour <= 24 && kcal >= 2300 && kcal < 2500) {
-            txtKcal.setTextColor(Color.rgb(244, 182, 66));
-            Log.d(TAG, "Yellow  " + kcal + " kcal at hour " + hour);
-        }
-        if (hour <= 12 && kcal >= 500
-                || hour > 12 && hour <= 18 && kcal >= 1800
-                || hour > 18 && hour <= 24 && kcal >= 2500) {
-            txtKcal.setTextColor(Color.parseColor("#33b247"));
-            Log.d(TAG, "Green  " + kcal + " kcal at hour " + hour);
-        }
     }
 }

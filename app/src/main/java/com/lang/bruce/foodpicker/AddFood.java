@@ -26,6 +26,16 @@ public class AddFood extends AppCompatActivity {
     private EditText txtFats;
     private EditText txtCarbs;
 
+    public static double checkText(String text) {
+        Log.d(TAG, "checkText " + text);
+        if (text.isEmpty() || text.equals("")) {
+            Log.d(TAG, "Text is empty");
+            return 0;
+        } else {
+            return Double.parseDouble(text);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,35 +58,39 @@ public class AddFood extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinnerCategory.setAdapter(spinnerAdapter);
         spinnerCategory.setSelection(1);
-
-        //todo savemenu button
     }
 
     private void saveFood() {
         Food food = new Food();
-        food.setName(txtName.getText().toString());
-        food.setType(spinnerCategory.getSelectedItem().toString());
-        if (checkBoxVeggie.isChecked()) food.setVegetarian(1);
-        else food.setVegetarian(0);
-        food.setTime(Double.parseDouble(txtTime.getText().toString()));
-        food.setKcal(Double.parseDouble(txtKcal.getText().toString()));
-        food.setProtein(Double.parseDouble(txtProtein.getText().toString()));
-        food.setFat(Double.parseDouble(txtFats.getText().toString()));
-        food.setCarbs(Double.parseDouble(txtCarbs.getText().toString()));
-        //fixme null values
-        if (!sql.hasFood(food)) {
-            sql.addFood(food);
-            Toast.makeText(this, food.getName() + " successfully added.", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "Added " + food.toString());
+        if (txtName.getText().toString().equals("")) {
+            Toast.makeText(this, "Field Name cannot be empty!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "EditText Name is empty");
         } else {
-            Toast.makeText(this, food.getName() + " already exist.", Toast.LENGTH_SHORT).show();
-        }
+            food.setName(txtName.getText().toString());
+            food.setType(spinnerCategory.getSelectedItem().toString());
+            if (checkBoxVeggie.isChecked()) food.setVegetarian(1);
+            else food.setVegetarian(0);
+            food.setTime(checkText(txtTime.getText().toString()));
+            food.setKcal(checkText(txtKcal.getText().toString()));
+            food.setProtein(checkText(txtProtein.getText().toString()));
+            food.setFat(checkText(txtFats.getText().toString()));
+            food.setCarbs(checkText(txtCarbs.getText().toString()));
+            if (!sql.hasFood(food)) {
+                sql.addFood(food);
+                finish();
+                Toast.makeText(this, food.getName() + " successfully added.", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Added " + food.toString());
+            } else {
+                Toast.makeText(this, food.getName() + " already exist. \nUpdating values...", Toast.LENGTH_SHORT).show();
+            }
 
-        Log.d(TAG, "Add Food " + food.toString());
+            Log.d(TAG, "Add Food " + food.toString());
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.save_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -93,7 +107,6 @@ public class AddFood extends AppCompatActivity {
             case R.id.save:
                 Log.d(TAG, "Save");
                 saveFood();
-                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);

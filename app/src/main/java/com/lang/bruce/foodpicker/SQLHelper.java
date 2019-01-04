@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
 
 public class SQLHelper extends SQLiteOpenHelper {
     private static final String TAG = "SQLHELPER";
-    //todo log and fixme
+
     private static final int DATABASE_VERSION = 23;
     private static final String DATABASE_NAME = "Food.db";
     private static final String[] projectionFood = {

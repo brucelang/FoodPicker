@@ -1,5 +1,6 @@
 package com.lang.bruce.foodpicker;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -40,4 +41,30 @@ class HelperMethods {
         Log.d(TAG, "Updated " + food.toString());
     }
 
+    public static int getKcalColor() {
+        int kcal = (int) Math.round(HelperMethods.todaysKcal);
+        Log.d(TAG, "getKcalColor " + kcal + " kcal");
+
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour <= 12 && kcal < 300
+                || hour > 12 && hour <= 18 && kcal < 1500
+                || hour > 18 && hour <= 24 && kcal < 2300) {
+            Log.d(TAG, "Red  " + kcal + " kcal at hour " + hour);
+            return Color.RED;
+        }
+
+        if (hour <= 12 && kcal < 500 && kcal >= 300
+                || hour > 12 && hour <= 18 && kcal >= 1500 && kcal < 1800
+                || hour > 18 && hour <= 24 && kcal >= 2300 && kcal < 2500) {
+            Log.d(TAG, "Yellow  " + kcal + " kcal at hour " + hour);
+            return Color.rgb(244, 182, 66);
+        }
+        if (hour <= 12 && kcal >= 500
+                || hour > 12 && hour <= 18 && kcal >= 1800
+                || hour > 18 && hour <= 24 && kcal >= 2500) {
+            Log.d(TAG, "Green  " + kcal + " kcal at hour " + hour);
+            return Color.parseColor("#33b247");
+        }
+        return Color.BLACK;
+    }
 }

@@ -26,8 +26,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
-import static java.lang.String.format;
-
 public class FoodOverview extends AppCompatActivity {
     private static final String TAG = "FOODOVERVIEW";
 
@@ -59,7 +57,7 @@ public class FoodOverview extends AppCompatActivity {
         pieChart.setCenterText(food.getKcal() + " kcal");
         pieChart.setCenterTextSize(20);
         pieChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
-        //pieChart.setCenterTextColor(Color.RED); //Todo maybe if much cal red green yellow,...
+        pieChart.setCenterTextColor(setKcalColor(food.getKcal()));
         pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -105,6 +103,19 @@ public class FoodOverview extends AppCompatActivity {
         legend.setXEntrySpace(15);
     }
 
+    private int setKcalColor(double kcal) {
+        if (kcal < 200) {
+            return Color.RED;
+        }
+        if (kcal < 500 && kcal >= 200) {
+            return Color.rgb(244, 182, 66);
+        }
+        if (kcal >= 500) {
+            return Color.parseColor("#33b247");
+        }
+        return Color.BLACK;
+    }
+
     private void setData() {
         Log.d(TAG, "Set data " + food.toString());
         if (!food.getType().contains(Constants.BREAKFAST)) {
@@ -125,9 +136,9 @@ public class FoodOverview extends AppCompatActivity {
         TextView txtMinutes = findViewById(R.id.textViewMinutes);
         int time = (int) Math.round(food.getTime());
         if (time != 1) {
-            txtMinutes.setText(format("%d minutes", Math.round(food.getTime())));
+            txtMinutes.setText(String.format("%d minutes", Math.round(food.getTime())));
         } else {
-            txtMinutes.setText(format("%d minute", Math.round(food.getTime())));
+            txtMinutes.setText(String.format("%d minute", Math.round(food.getTime())));
         }
     }
 
